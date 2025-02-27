@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -12,23 +10,37 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       User.hasMany(models.Messages, {
-        foreignKey: 'senderId',
+        foreignKey: "senderId",
         onDelete: "CASCADE",
-        as: 'messages',
+        as: "messages",
       });
     }
   }
-  User.init({
-    name: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    phone: DataTypes.INTEGER,
-    about: DataTypes.STRING,
-    age: DataTypes.STRING,
-    picture: DataTypes.STRING,
-    password: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
+  User.init(
+    {
+      name: DataTypes.STRING,
+      lastName: DataTypes.STRING,
+      phone: {
+        type: DataTypes.INTEGER,
+        validate: {
+          len: [9, 11],
+          isUnique: async function (value) {
+            const user = await User.findOne({ where: { phone: value } });
+            if (user) {
+              throw new Error("Este Numero já existe");
+            }
+          },
+        },
+      },
+      about: DataTypes.STRING,
+      age: DataTypes.STRING,
+      picture: DataTypes.STRING,
+      password: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "User",
+    }
+  );
   return User;
 };

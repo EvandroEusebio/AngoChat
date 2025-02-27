@@ -95,6 +95,33 @@
           }
         }
       }
+    },
+    "/chat/send": {
+      "post": {
+        "summary": "Send a new message",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatSend"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sucess",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatSend"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -167,6 +194,20 @@
           },
           "newMessage": {
             "type": "object"
+          }
+        }
+      },
+      "ChatSend": {
+        "type": "object",
+        "properties": {
+          "conversationId": {
+            "type": "integer"
+          },
+          "senderId": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
           }
         }
       }

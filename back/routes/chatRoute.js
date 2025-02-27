@@ -1,13 +1,29 @@
 const express = require("express");
 const router = express.Router();
-const { Conversations } = require("../models/index");
-const { Messages } = require("../models/index");
-const { Participants } = require("../models/index");
+const {
+  Conversations,
+  Messages,
+  Participants,
+  User,
+} = require("../models/index");
 
 // Create a new chat
 router.post("/create", async (req, res) => {
   try {
     const { senderId, receiveId, message } = req.body;
+
+    // verify if sender and receiver are the same
+    if (senderId === receiveId) {
+      return res.status(400).json({ message: "You can't chat with yourself!" });
+    }
+
+    // verify if user (sender or received) exists
+    const isSender = await User.findOne({ where: { id: senderId } });
+    const isReceive = await User.findOne({ where: { id: receiveId } });
+
+    if (!isSender || !isReceive) {
+      return res.status(400).json({ message: "User not exist!" });
+    }
 
     // Create a new chat
     const conversation = await Conversations.create();
@@ -24,7 +40,6 @@ router.post("/create", async (req, res) => {
       senderId: senderId,
       content: message,
     });
-
     res.json({ conversation, participants, newMessage });
   } catch (error) {
     console.log(error);
@@ -44,13 +59,29 @@ router.post("/create", async (req, res) => {
 // send message
 router.post("/send", async (req, res) => {
   try {
-    const { conversationId, senderID, message } = req.body;
+    const { conversationId, senderId, message } = req.body;
+
+    // verify if user (sender) exists
+    const isSender = await User.findOne({ where: { id: senderId } });
+
+    if (!isSender) {
+      return res.status(400).json({ message: "User not exist!" });
+    }
+
+    // verify if conversation exists
+    const isConversation = await Conversations.findOne({
+      where: { id: conversationId },
+    });
+    
+    if (!isConversation) {
+      return res.status(400).json({ message: "Conversation not exist!" });
+    }
 
     // Create a new message
     const newMessage = await Messages.create({
-      conversationId,
-      senderId: senderID,
-      message,
+      conversationId: conversationId,
+      senderId: senderId,
+      content: message,
     });
 
     res.json({ newMessage });

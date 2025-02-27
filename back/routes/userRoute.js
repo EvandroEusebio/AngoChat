@@ -42,7 +42,7 @@ router.post("/signin", async (req, res) => {
         res.status(401).json({ message: err.message });
       });
     } else {
-      console.error("Server Error:", error.message);
+      console.error("Server Error:", error);
       res.status(500).json({
         message: "Failed to create Client try later!" + error.message,
       });
