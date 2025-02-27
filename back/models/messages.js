@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     conversationId: DataTypes.INTEGER,
     senderId: DataTypes.INTEGER,
     content: DataTypes.STRING,
-    type: DataTypes.ENUM
+    type: DataTypes.ENUM(['text', 'image', 'video', 'audio']),
   }, {
     sequelize,
     modelName: 'Messages',

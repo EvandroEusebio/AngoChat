@@ -16,7 +16,7 @@ module.exports = {
           model: "Conversations",
           key: "id",
         },
-        unique: true,
+        
       },
       userId: {
         type: Sequelize.INTEGER,
