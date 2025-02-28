@@ -28,6 +28,8 @@ router.post("/create", async (req, res) => {
     // Create a new chat
     const conversation = await Conversations.create();
 
+    console.log(conversation);
+
     // Create participants
     const participants = await Participants.bulkCreate([
       { conversationId: conversation.id, userId: senderId },
@@ -72,7 +74,7 @@ router.post("/send", async (req, res) => {
     const isConversation = await Conversations.findOne({
       where: { id: conversationId },
     });
-    
+
     if (!isConversation) {
       return res.status(400).json({ message: "Conversation not exist!" });
     }
@@ -95,6 +97,27 @@ router.post("/send", async (req, res) => {
       console.error("Server Error:", error);
       res.status(500).json({ message: "Failed to send message try later!" });
     }
+  }
+});
+
+// show all messages of a chat
+router.get("/messages/:chatId", async (req, res) => {
+  try {
+    const messages = await Messages.findAll({
+      where: { conversationId: req.params.chatId },
+      include: [
+        {
+          model: User,
+          as: "sender",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+
+    res.json({ messages });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Failed to show messages try later!" });
   }
 });
 module.exports = router;

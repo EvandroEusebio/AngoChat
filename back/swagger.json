@@ -69,6 +69,60 @@
         }
       }
     },
+    "/user/chats/{id}": {
+      "get": {
+        "summary": "Get chats for user id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The Pix",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserChats"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat/messages/{id}": {
+      "get": {
+        "summary": "Get messages chat",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The messages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatSend"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/chat/create": {
       "post": {
         "summary": "Create a new chat",
@@ -208,6 +262,35 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      },
+      "UserChats": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "about": {
+            "type": "string"
+          },
+          "age": {
+            "type": "string"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "conversations": {
+            "type": "object"
           }
         }
       }

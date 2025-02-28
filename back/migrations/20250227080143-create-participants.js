@@ -11,20 +11,19 @@ module.exports = {
       },
       conversationId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: "Conversations",
           key: "id",
         },
-        
+        onDelete: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: "Users",
           key: "id",
         },
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,

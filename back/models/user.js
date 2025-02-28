@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         as: "messages",
       });
+      User.belongsToMany(models.Conversations, {
+        through: "Participants",
+        as: "chats",
+        foreignKey: "userId",
+      });
     }
   }
   User.init(

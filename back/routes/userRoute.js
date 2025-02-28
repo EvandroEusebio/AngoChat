@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { User } = require("../models/index");
+const { User, Conversations, Messages } = require("../models/index");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
+const { where } = require("sequelize");
 dotenv.config();
 //const authenticateToken = require("../middlewares/auth");
 
@@ -78,20 +79,45 @@ router.post("/login", async (req, res) => {
   }
 });
 
-/*
-router.get("/", async (req, res) => {
+// Show all chats of the user
+router.get("/chats/:id", async (req, res) => {
   try {
-    const user = await User.findAll({
-      include: {
-        model: Pix,
-        as: "pixs",
-      },
+    const user = await User.findOne({
+      where: { id: req.params.id },
+      attributes: ["id", "name"],
+      include: [
+        {
+          model: Conversations,
+          as: "chats",
+          attributes: ["id", "type"],
+          through: { attributes: [] },
+          include: [
+            {
+              model: User,
+              as: "participants",
+              attributes: ["id", "name", "picture", "phone"],
+              through: { attributes: [] }, // Oculta os dados da tabela pivot (Participants)
+            },
+            {
+              model: Messages,
+              as: "messages",
+              attributes: ["id", "content", "senderId", "createdAt"],
+              order: [["createdAt", "DESC"]], // Ordena por data de criação, pegando a mais recente primeiro
+              limit: 1,
+            },
+          ],
+        },
+      ],
     });
-    res.json(user);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.json({userChats: user});
   } catch (error) {
-    res.status(500).json({ message: "Failed User not found." });
+    res.status(500).json({ message: "Failed to retrieve user." });
   }
 });
-*/
 
 module.exports = router;
