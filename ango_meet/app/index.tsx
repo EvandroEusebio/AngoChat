@@ -1,6 +1,6 @@
 import { LinearGradient } from "@/components/ui/linearGradient";
 import { VStack } from "@/components/ui/vstack";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import {
   Image,
   SafeAreaView,
@@ -9,15 +9,21 @@ import {
   Text,
   TouchableOpacity,
   View,
+  GestureResponderEvent,
 } from "react-native";
 
 const image = require("../assets/images/woman.webp");
 
 export default function Welcome() {
+  const router = useRouter();
+
+  const handlePress = (event: GestureResponderEvent) => {
+    // Chamando o router.push dentro de uma função que recebe o evento
+    router.push("/auth/signIn");
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <StatusBar barStyle="dark-content" />
-
       <ScrollView className="flex-1">
         <VStack className="flex-1">
           <LinearGradient
@@ -48,11 +54,12 @@ export default function Welcome() {
           <TouchableOpacity
             className="bg-yellow-400 rounded-full py-4 items-center mb-4"
             activeOpacity={0.8}
+            onPress={handlePress}
           >
             <Text className="font-semibold text-base">Entrar</Text>
           </TouchableOpacity>
 
-          <Link href={"/(tabs)"}>
+          <Link href={"/auth/signUp"}>
             <Text className="text-center text-gray-800 font-medium">
               Criar uma conta
             </Text>
