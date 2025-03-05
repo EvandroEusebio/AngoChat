@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { handleLogin } from "@/services/apiRoutes/user";
 import {
   Text,
   TouchableOpacity,
@@ -37,8 +38,15 @@ export default function SignIn() {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    await handleLogin(data)
+      .then((resp) => {
+        console.log(resp.data);
+      })
+      .catch((err) => {
+        console.error("Erro ao fazel login: ", err.message);
+      });
+    //console.log(data);
   };
 
   const handlerBack = () => {
